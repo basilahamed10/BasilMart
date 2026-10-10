@@ -1,24 +1,6 @@
-# Build output
 build/
-bin/
-lib/
-*.exe
-*.dll
-*.pdb
-*.obj
-*.o
-*.ilk
-*.exp
-
-# vcpkg package artifacts
-vcpkg_installed/
-.vcpkg/
-
-# IDE and OS
 .vs/
 .vscode/
-out.log
-err.log
-*.log
-Thumbs.db
-.DS_Store
+.env
+config.json
+vcpkg_installed/
