@@ -10,19 +10,36 @@
 
 using namespace drogon;
 
+// Helper function for URL decoding credentials from DATABASE_URL
+static std::string urlDecode(const std::string& in)
+{
+    std::string out;
+    out.reserve(in.size());
+    for (size_t i = 0; i < in.size(); ++i)
+    {
+        if (in[i] == '%' && i + 2 < in.size())
+        {
+            int hex = 0;
+            std::istringstream iss(in.substr(i + 1, 2));
+            if (iss >> std::hex >> hex)
+            {
+                out.push_back(static_cast<char>(hex));
+                i += 2;
+                continue;
+            }
+        }
+        else if (in[i] == '+')
+        {
+            out.push_back(' ');
+            continue;
+        }
+        out.push_back(in[i]);
+    }
+    return out;
+}
+
 int main()
 {
-    // ==========================================
-    // LOAD BASE CONFIGURATION
-    // ==========================================
-
-    std::ifstream configCheck("config.json");
-    if (configCheck.good())
-    {
-        configCheck.close();
-        app().loadConfigFile("config.json");
-    }
-
     // ==========================================
     // DYNAMIC ENVIRONMENT VARIABLE CONFIGURATION
     // ==========================================
@@ -38,7 +55,6 @@ int main()
             serverPort = 8080;
         }
     }
-    app().addListener("0.0.0.0", serverPort);
 
     // 2. PostgreSQL Database Configuration from Environment
     std::string dbHost;
@@ -56,8 +72,8 @@ int main()
         std::smatch match;
         if (std::regex_match(dbUrl, match, urlRegex))
         {
-            if (match[1].matched) dbUser = match[1].str();
-            if (match[2].matched) dbPass = match[2].str();
+            if (match[1].matched) dbUser = urlDecode(match[1].str());
+            if (match[2].matched) dbPass = urlDecode(match[2].str());
             if (match[3].matched) dbHost = match[3].str();
             if (match[4].matched) dbPort = std::stoi(match[4].str());
             if (match[5].matched) dbName = match[5].str();
@@ -84,7 +100,11 @@ int main()
     const char* passEnv = std::getenv("PGPASSWORD");
     if (passEnv && *passEnv) dbPass = passEnv;
 
-    if (!dbHost.empty() && !dbName.empty())
+    bool hasEnvDb = !dbHost.empty() && !dbName.empty();
+
+    // If environment DB is provided, configure directly;
+    // otherwise fallback to config.json for local development
+    if (hasEnvDb)
     {
         app().createDbClient(
             "postgresql",
@@ -98,18 +118,47 @@ int main()
             "default"
         );
     }
+    else
+    {
+        std::ifstream configCheck("config.json");
+        if (configCheck.good())
+        {
+            configCheck.close();
+            app().loadConfigFile("config.json");
+        }
+        else
+        {
+            // Default local fallback
+            app().createDbClient(
+                "postgresql",
+                "127.0.0.1",
+                5432,
+                "Basilmart",
+                "postgres",
+                "basil",
+                4,
+                "",
+                "default"
+            );
+        }
+    }
 
+    // Always listen on 0.0.0.0 and the dynamically configured port
+    app().addListener("0.0.0.0", serverPort);
 
     // ==========================================
     // CORS
     // ==========================================
 
+    const char* allowedOriginEnv = std::getenv("ALLOWED_ORIGIN");
+    const std::string allowedOrigin = (allowedOriginEnv && *allowedOriginEnv) ? allowedOriginEnv : "*";
+
     app().registerHttpResponseCreationAdvice(
-        [](const HttpResponsePtr& response)
+        [allowedOrigin](const HttpResponsePtr& response)
         {
             response->addHeader(
                 "Access-Control-Allow-Origin",
-                "*"
+                allowedOrigin
             );
 
             response->addHeader(
@@ -119,7 +168,7 @@ int main()
 
             response->addHeader(
                 "Access-Control-Allow-Headers",
-                "Content-Type"
+                "Content-Type, Authorization, X-Requested-With"
             );
         }
     );
@@ -130,7 +179,7 @@ int main()
     // ==========================================
 
     app().registerSyncAdvice(
-        [](const HttpRequestPtr& req) -> HttpResponsePtr
+        [allowedOrigin](const HttpRequestPtr& req) -> HttpResponsePtr
         {
             if (req->method() == Options)
             {
@@ -141,7 +190,7 @@ int main()
 
                 response->addHeader(
                     "Access-Control-Allow-Origin",
-                    "*"
+                    allowedOrigin
                 );
 
                 response->addHeader(
@@ -151,7 +200,12 @@ int main()
 
                 response->addHeader(
                     "Access-Control-Allow-Headers",
-                    "Content-Type"
+                    "Content-Type, Authorization, X-Requested-With"
+                );
+
+                response->addHeader(
+                    "Access-Control-Max-Age",
+                    "86400"
                 );
 
                 return response;

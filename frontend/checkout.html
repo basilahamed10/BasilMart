@@ -111,6 +111,7 @@ footer{background:#151515;color:white;padding:35px 6%;font-size:11px;line-height
   <p>© 2026 BASILMART. ALL RIGHTS RESERVED.</p>
 </footer>
 
+<script src="config.js"></script>
 <script>
 const cart = JSON.parse(localStorage.getItem("basilCart") || "[]");
 const money = value => "₹" + Number(value).toLocaleString("en-IN");
@@ -134,7 +135,7 @@ function escapeHtml(value) {
   }[ch]));
 }
 
-document.getElementById("checkoutForm").addEventListener("submit", function(event) {
+document.getElementById("checkoutForm").addEventListener("submit", async function(event) {
   event.preventDefault();
 
   if (cart.length === 0) {
@@ -143,16 +144,41 @@ document.getElementById("checkoutForm").addEventListener("submit", function(even
     return;
   }
 
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const userId = (user && user.id) ? user.id : 1;
+
+  const productIds = cart.map(i => i.id || 1).join(",");
+  const quantities = cart.map(i => i.quantity || 1).join(",");
+  const prices = cart.map(i => i.price || 0).join(",");
+
+  const API_URL = (typeof window !== "undefined" && window.API_URL) ? window.API_URL : "http://localhost:8080";
+
+  try {
+    const res = await fetch(
+      `${API_URL}/orders?user_id=${userId}&total=${total}&product_ids=${encodeURIComponent(productIds)}&quantities=${encodeURIComponent(quantities)}&prices=${encodeURIComponent(prices)}`,
+      { method: "POST" }
+    );
+    const data = await res.json();
+    if (!data.success) {
+      console.warn("Backend order creation response:", data.message);
+    }
+  } catch (err) {
+    console.warn("Could not save order to backend database, falling back to local storage:", err);
+  }
+
   const orders = JSON.parse(localStorage.getItem("basilOrders") || "[]");
 
   const order = {
     id: Date.now(),
+    orderId: "BM-" + Date.now().toString().slice(-6),
     items: cart,
     total: total,
+    customerName: document.getElementById("name").value.trim(),
     name: document.getElementById("name").value.trim(),
     phone: document.getElementById("phone").value.trim(),
     city: document.getElementById("city").value.trim(),
     address: document.getElementById("address").value.trim(),
+    paymentMethod: document.getElementById("payment").value,
     payment: document.getElementById("payment").value,
     status: "Order Placed",
     date: new Date().toLocaleString()

@@ -25,17 +25,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libbrotli-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Build and install Drogon framework from source
+# Build and install Drogon framework from source (pinned to stable release v1.9.9)
 WORKDIR /drogon-src
-RUN git clone --depth 1 --recurse-submodules https://github.com/drogonframework/drogon.git . \
+RUN git clone --depth 1 --branch v1.9.9 --recurse-submodules https://github.com/drogonframework/drogon.git . \
     && mkdir build \
     && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release \
+    && cmake -G Ninja \
+             -DCMAKE_BUILD_TYPE=Release \
+             -DCMAKE_CXX_FLAGS="-O2 -pipe --param ggc-min-expand=20 --param ggc-min-heapsize=32768" \
+             -DCMAKE_INSTALL_LIBDIR=lib \
+             -DBUILD_CTL=OFF \
              -DBUILD_EXAMPLES=OFF \
              -DBUILD_TESTING=OFF \
-             -DBUILD_POSTGRESQL=ON .. \
-    && cmake --build . -j$(nproc) \
-    && cmake --install . \
+             -DBUILD_DOC=OFF \
+             -DBUILD_POSTGRESQL=ON \
+             -DBUILD_MYSQL=OFF \
+             -DBUILD_SQLITE=OFF \
+             -DBUILD_REDIS=OFF .. \
+    && ninja -j 1 \
+    && ninja install \
     && cd / \
     && rm -rf /drogon-src
 
@@ -44,11 +52,13 @@ WORKDIR /app
 COPY CMakeLists.txt config.json ./
 COPY src/ ./src/
 
-# Compile BasilMart binary
+# Compile BasilMart binary (using 1 parallel job to stay strictly within Render memory constraints)
 RUN mkdir -p build \
     && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release .. \
-    && cmake --build . -j$(nproc)
+    && cmake -G Ninja \
+             -DCMAKE_BUILD_TYPE=Release \
+             -DCMAKE_CXX_FLAGS="-O2 -pipe --param ggc-min-expand=20 --param ggc-min-heapsize=32768" .. \
+    && ninja -j 1
 
 # Stage 2: Minimal Production Runtime
 FROM ubuntu:24.04 AS runtime
@@ -68,6 +78,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libbrotli1 \
     && rm -rf /var/lib/apt/lists/*
 
+# Configure dynamic library loader path
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/drogon.conf
+
 # Create a dedicated non-root user for security
 RUN useradd -m -u 10001 basilmart
 
@@ -81,8 +94,8 @@ RUN ldconfig
 COPY --from=builder /app/build/BasilMart /app/BasilMart
 COPY --from=builder /app/config.json /app/config.json
 
-# Set ownership
-RUN chown -R basilmart:basilmart /app
+# Create uploads directory and set permissions
+RUN mkdir -p /app/uploads && chown -R basilmart:basilmart /app
 
 USER basilmart
 
