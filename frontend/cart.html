@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Bag — BasilMart</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:#111;background:#fff}
+a{color:inherit;text-decoration:none}
+.top{background:#171717;color:white;text-align:center;padding:10px;font-size:10px;letter-spacing:2px}
+nav{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #eee;gap:15px}
+.logo{font-size:24px;font-weight:900;letter-spacing:-1px}
+.logo span{color:#777}
+.links{display:flex;gap:23px;font-size:11px;font-weight:bold;letter-spacing:1px}
+.actions{display:flex;gap:20px;font-size:11px;font-weight:bold}
+main{max-width:1150px;margin:auto;padding:55px 6% 80px}
+.kicker{font-size:10px;letter-spacing:2px;color:#777;margin-bottom:12px}
+h1{font-size:clamp(38px,6vw,60px);letter-spacing:-3px}
+.subtitle{margin-top:12px;color:#777;font-size:13px}
+.layout{display:grid;grid-template-columns:1.6fr 1fr;gap:50px;margin-top:45px}
+.section-title{font-size:15px;letter-spacing:1px;margin-bottom:20px}
+.item{display:grid;grid-template-columns:110px 1fr;gap:18px;padding:20px 0;border-top:1px solid #e5e5e5}
+.item img{width:110px;height:135px;object-fit:cover;background:#f1f1f1}
+.item-name{font-size:14px;font-weight:bold;margin:5px 0 10px}
+.item-price{font-size:13px;color:#555}
+.remove{background:none;border:0;border-bottom:1px solid #aaa;font-size:10px;margin-top:22px;padding-bottom:4px;cursor:pointer}
+.summary{background:#f5f5f3;padding:25px;height:max-content}
+.summary h2{font-size:20px;margin-bottom:24px}
+.line{display:flex;justify-content:space-between;gap:15px;margin:17px 0;font-size:13px}
+.total{display:flex;justify-content:space-between;border-top:1px solid #ccc;padding-top:20px;margin-top:22px;font-size:18px;font-weight:bold}
+.note{font-size:11px;color:#666;line-height:1.7;margin-top:18px}
+.btn{display:block;width:100%;margin-top:25px;padding:16px;background:#111;color:#fff;border:1px solid #111;font-size:11px;font-weight:bold;letter-spacing:1px;text-align:center;cursor:pointer}
+.btn:hover{background:#fff;color:#111}
+.continue{display:inline-block;margin-top:25px;font-size:11px;font-weight:bold;border-bottom:1px solid;padding-bottom:5px}
+.empty{text-align:center;padding:45px 10px;border-top:1px solid #eee;color:#666;font-size:14px;line-height:2}
+footer{background:#151515;color:#fff;padding:35px 6%;font-size:11px;line-height:2}
+@media(max-width:700px){nav{height:65px;padding:0 4%}.logo{font-size:20px}.links{display:none}.actions{gap:12px}main{padding:38px 4% 60px}.layout{grid-template-columns:1fr;gap:35px}.item{grid-template-columns:90px 1fr}.item img{width:90px;height:115px}h1{letter-spacing:-2px}}
+</style>
+</head>
+<body>
+<div class="top">BASILMART ORIGINALS · YOUR STYLE, YOUR RULES</div>
+<nav>
+  <a class="logo" href="index.html">BASIL<span>MART.</span></a>
+  <div class="links">
+    <a href="index.html">HOME</a>
+    <a href="products.html">SHOP ALL</a>
+    <a href="products.html">NEW ARRIVALS</a>
+  </div>
+  <div class="actions">
+    <a href="login.html">ACCOUNT</a>
+    <a href="cart.html">BAG (<span id="count">0</span>)</a>
+  </div>
+</nav>
+
+<main>
+  <div class="kicker">YOUR SELECTION / BASILMART</div>
+  <h1>YOUR BAG.</h1>
+  <p class="subtitle">Good choices. Great style. Review your selection below.</p>
+
+  <div class="layout">
+    <section>
+      <h2 class="section-title" id="itemsTitle">YOUR ITEMS</h2>
+      <div id="items"></div>
+      <a class="continue" href="products.html">← CONTINUE SHOPPING</a>
+    </section>
+
+    <aside class="summary">
+      <h2>ORDER SUMMARY</h2>
+      <div class="line"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+      <div class="line"><span>Shipping</span><span>Calculated at checkout</span></div>
+      <div class="total"><span>Total</span><span id="total">₹0</span></div>
+      <p class="note">Shipping charges, if any, will be confirmed at checkout.</p>
+      <a href="checkout.html" class="btn" id="checkoutBtn">PROCEED TO CHECKOUT →</a>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="logo">BASILMART.</div>
+  <p>Built for everyday. Styled by you.</p>
+  <p>© 2026 BASILMART. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script>
+const imageList=[
+ "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=300&q=80",
+ "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=300&q=80",
+ "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80",
+ "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300&q=80",
+ "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=300&q=80"
+];
+
+function renderCart(){
+ const cart=JSON.parse(localStorage.getItem("basilCart")||"[]");
+ const items=document.getElementById("items");
+ const total=cart.reduce((sum,item)=>sum+Number(item.price||0),0);
+
+ document.getElementById("count").textContent=cart.length;
+ document.getElementById("itemsTitle").textContent="YOUR ITEMS ("+cart.length+")";
+ document.getElementById("subtotal").textContent="₹"+total.toLocaleString("en-IN");
+ document.getElementById("total").textContent="₹"+total.toLocaleString("en-IN");
+
+ if(cart.length===0){
+  items.innerHTML='<div class="empty">Your bag is currently empty.<br>Find something that feels like you.<br><a class="continue" href="products.html">EXPLORE THE COLLECTION →</a></div>';
+  document.getElementById("checkoutBtn").style.opacity=".45";
+  document.getElementById("checkoutBtn").href="#";
+  return;
+ }
+
+ document.getElementById("checkoutBtn").style.opacity="1";
+ document.getElementById("checkoutBtn").href="checkout.html";
+
+ items.innerHTML=cart.map((item,index)=>`
+  <article class="item">
+   <img src="${imageList[index%imageList.length]}" alt="Product image">
+   <div>
+    <div class="item-name">${escapeHtml(item.name)}</div>
+    <div class="item-price">₹${Number(item.price).toLocaleString("en-IN")}</div>
+    <button class="remove" onclick="removeItem(${index})">REMOVE ITEM ×</button>
+   </div>
+  </article>
+ `).join("");
+}
+
+function escapeHtml(value){
+ return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+
+function removeItem(index){
+ const cart=JSON.parse(localStorage.getItem("basilCart")||"[]");
+ cart.splice(index,1);
+ localStorage.setItem("basilCart",JSON.stringify(cart));
+ renderCart();
+}
+
+renderCart();
+</script>
+</body>
+</html>

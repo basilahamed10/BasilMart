@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All — BasilMart</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:#111;background:#fff}
+a{color:inherit;text-decoration:none}
+.top{background:#171717;color:#fff;text-align:center;padding:10px;font-size:10px;letter-spacing:2px}
+nav{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #eee;gap:15px}
+.logo{font-weight:900;font-size:24px;letter-spacing:-1px}
+.logo span{color:#777}
+.links,.actions{display:flex;gap:23px;font-size:11px;font-weight:bold;letter-spacing:1px}
+.header{padding:55px 6% 35px;background:#f5f5f3}
+.kicker{font-size:10px;letter-spacing:2px;color:#777;margin-bottom:13px}
+h1{font-size:clamp(38px,6vw,65px);letter-spacing:-3px}
+.subtitle{margin-top:14px;font-size:13px;color:#555;line-height:1.7}
+.toolbar{display:flex;justify-content:space-between;align-items:center;padding:24px 6%;border-bottom:1px solid #eee;font-size:12px}
+.toolbar select{padding:10px;border:1px solid #ddd;background:white}
+.grid{padding:30px 6% 70px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 14px}
+.card{min-width:0}
+.imagebox{position:relative;background:#f2f2f2;overflow:hidden}
+.imagebox img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;transition:transform .35s}
+.card:hover img{transform:scale(1.035)}
+.tag{position:absolute;top:12px;left:12px;background:#fff;padding:7px 9px;font-size:9px;letter-spacing:1px}
+.info{padding:14px 0}
+.name{font-size:13px;font-weight:bold;margin-bottom:8px}
+.desc{font-size:11px;color:#777;line-height:1.5;margin-bottom:9px}
+.price{font-size:13px;margin-bottom:13px}
+.add{width:100%;background:#111;color:white;border:1px solid #111;padding:13px 8px;font-size:10px;font-weight:bold;letter-spacing:1px;cursor:pointer}
+.add:hover{background:#fff;color:#111}
+.message{grid-column:1/-1;text-align:center;padding:40px;color:#666;line-height:1.8}
+footer{background:#151515;color:white;padding:35px 6%;font-size:11px;line-height:2}
+@media(max-width:850px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.links{gap:12px}}
+@media(max-width:600px){nav{padding:0 4%;height:64px}.logo{font-size:20px}.links{display:none}.actions{gap:12px;font-size:10px}.header{padding:40px 5% 30px}h1{letter-spacing:-2px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:22px 4% 45px;gap:23px 10px}.toolbar{padding:17px 4%}.name{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="top">BASILMART ORIGINALS · DISCOVER YOUR NEXT FIT</div>
+
+<nav>
+  <a class="logo" href="index.html">BASIL<span>MART.</span></a>
+  <div class="links">
+    <a href="index.html">HOME</a>
+    <a href="products.html">SHOP ALL</a>
+    <a href="products.html">NEW ARRIVALS</a>
+  </div>
+  <div class="actions">
+    <a href="login.html">ACCOUNT</a>
+    <a href="cart.html">BAG (<span id="cartCount">0</span>)</a>
+  </div>
+</nav>
+
+<header class="header">
+  <div class="kicker">THE BASILMART COLLECTION / 2026</div>
+  <h1>SHOP ALL.</h1>
+  <p class="subtitle">Everyday essentials. Standout pieces. Find your own style.</p>
+</header>
+
+<div class="toolbar">
+  <span id="productCount">LOADING COLLECTION...</span>
+  <select id="sort">
+    <option value="default">Featured</option>
+    <option value="low">Price: Low to High</option>
+    <option value="high">Price: High to Low</option>
+    <option value="name">Name: A to Z</option>
+  </select>
+</div>
+
+<main class="grid" id="products">
+  <div class="message">Loading collection...</div>
+</main>
+
+<footer>
+  <div class="logo">BASILMART.</div>
+  <p>Built for everyday. Styled by you.</p>
+  <p>© 2026 BASILMART. ALL RIGHTS RESERVED.</p>
+  <p><a href="index.html">HOME</a> &nbsp; <a href="cart.html">CART</a> &nbsp; <a href="orders.html">ORDERS</a></p>
+</footer>
+
+<script src="config.js"></script>
+<script>
+const API_URL = (typeof window !== "undefined" && window.API_URL) ? window.API_URL : "http://localhost:8080";
+const fallbackImages = [
+ "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80",
+ "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80",
+ "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+ "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+ "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80"
+];
+
+let products = [];
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem("basilCart") || "[]");
+  document.getElementById("cartCount").textContent = cart.length;
+}
+
+function addToCart(id) {
+  const product = products.find(p => String(p.id) === String(id));
+  if (!product) return;
+
+  const cart = JSON.parse(localStorage.getItem("basilCart") || "[]");
+  cart.push({
+    id: product.id,
+    name: product.name,
+    price: Number(product.price)
+  });
+
+  localStorage.setItem("basilCart", JSON.stringify(cart));
+  updateCartCount();
+  alert(product.name + " added to cart!");
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  }[ch]));
+}
+
+function renderProducts() {
+  const grid = document.getElementById("products");
+  const sort = document.getElementById("sort").value;
+  let shown = [...products];
+
+  if (sort === "low") shown.sort((a,b) => Number(a.price)-Number(b.price));
+  if (sort === "high") shown.sort((a,b) => Number(b.price)-Number(a.price));
+  if (sort === "name") shown.sort((a,b) => a.name.localeCompare(b.name));
+
+  document.getElementById("productCount").textContent = shown.length + " PRODUCTS";
+
+  if (!shown.length) {
+    grid.innerHTML = '<div class="message">No products found.</div>';
+    return;
+  }
+
+  grid.innerHTML = shown.map((p,index) => `
+    <article class="card">
+      <div class="imagebox">
+        <img src="${fallbackImages[index % fallbackImages.length]}"
+             alt="${escapeHtml(p.name)}" loading="lazy">
+        <span class="tag">BASILMART EDIT</span>
+      </div>
+      <div class="info">
+        <div class="name">${escapeHtml(p.name)}</div>
+        <div class="desc">${escapeHtml(p.description || "Everyday style. Made for you.")}</div>
+        <div class="price">₹${Number(p.price).toLocaleString("en-IN")}</div>
+        <button class="add" onclick="addToCart('${String(p.id).replace(/'/g, "\\'")}')">
+          ADD TO BAG +
+        </button>
+      </div>
+    </article>
+  `).join("");
+}
+
+async function loadProducts() {
+  const grid = document.getElementById("products");
+
+  try {
+    const response = await fetch(`${API_URL}/products`, {
+      method: "GET"
+    });
+
+    const text = await response.text();
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("Backend JSON response varala. Server route-ai check pannanum.");
+    }
+
+    if (!response.ok || data.success === false) {
+      throw new Error(data.message || "Products request failed.");
+    }
+
+    products = Array.isArray(data) ? data : (data.products || []);
+    renderProducts();
+
+  } catch (error) {
+    grid.innerHTML = `
+      <div class="message">
+        <h3>Collection temporarily unavailable</h3>
+        <p>${escapeHtml(error.message || "Backend connection failed.")}</p>
+        <p>Backend server running-aa irukka check panni refresh pannu.</p>
+      </div>`;
+    document.getElementById("productCount").textContent = "PLEASE TRY AGAIN";
+  }
+}
+
+document.getElementById("sort").addEventListener("change", renderProducts);
+updateCartCount();
+loadProducts();
+</script>
+</body>
+</html>

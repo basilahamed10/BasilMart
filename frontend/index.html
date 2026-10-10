@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BasilMart — Wear Your Identity</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
+a{color:inherit;text-decoration:none}
+.topbar{background:#171717;color:#fff;text-align:center;padding:10px;font-size:10px;letter-spacing:2px}
+nav{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #eee;gap:20px}
+.logo{font-size:25px;font-weight:900;letter-spacing:-1.5px}
+.logo span{color:#777}
+.links{display:flex;gap:27px;font-size:11px;font-weight:bold;letter-spacing:1px}
+.actions{display:flex;gap:18px;font-size:12px;align-items:center}
+.menu{display:none}
+.hero{margin:18px auto 0;width:96%;min-height:510px;background:#242424 url('https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1800&q=85') center 38%/cover;position:relative;display:flex;align-items:flex-end;color:white}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.78),rgba(0,0,0,.04) 85%)}
+.hero-content{position:relative;padding:45px 5%;max-width:650px}
+.eyebrow{font-size:11px;letter-spacing:3px;margin-bottom:18px}
+.hero h1{font-size:clamp(42px,7vw,82px);line-height:.95;letter-spacing:-4px;font-weight:900}
+.hero p{font-size:13px;line-height:1.8;margin:22px 0;max-width:390px}
+.btn{display:inline-block;background:white;color:#111;padding:15px 23px;font-size:11px;font-weight:bold;letter-spacing:1.5px;border:1px solid white}
+.btn:hover{background:#ddd}
+.section{padding:65px 6%}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px;gap:15px}
+.kicker{font-size:10px;letter-spacing:2px;color:#777;margin-bottom:10px}
+h2{font-size:clamp(25px,4vw,38px);letter-spacing:-1.5px}
+.viewall{font-size:11px;font-weight:bold;border-bottom:1px solid;padding-bottom:5px;white-space:nowrap}
+.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.category{height:320px;position:relative;overflow:hidden;background:#eee;color:white}
+.category img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.category:hover img{transform:scale(1.04)}
+.category:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.cat-text{position:absolute;z-index:1;bottom:22px;left:22px}
+.cat-text h3{font-size:26px;margin-bottom:9px}
+.cat-text span{font-size:10px;letter-spacing:2px}
+.products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.product img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#f1f1f1;display:block}
+.product-info{padding-top:13px}
+.product-name{font-size:12px;font-weight:bold;margin-bottom:8px}
+.product-price{font-size:12px;color:#555}
+.tag{display:inline-block;background:#f0f0f0;padding:6px 8px;font-size:9px;letter-spacing:1px;margin-bottom:10px}
+.banner{margin:0 4%;background:#e9e7e2;padding:55px 7%;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.banner h2{font-size:clamp(27px,4vw,45px);max-width:520px;line-height:1.1}
+.darkbtn{display:inline-block;background:#111;color:#fff;padding:15px 23px;font-size:11px;letter-spacing:1px;font-weight:bold;white-space:nowrap}
+footer{background:#151515;color:#fff;padding:40px 6%;margin-top:60px}
+.footer-row{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap}
+footer p{font-size:11px;color:#bbb;line-height:2;margin-top:12px}
+footer a{font-size:11px;margin-right:15px}
+@media(max-width:750px){
+ nav{height:65px;padding:0 4%}
+ .links{display:none}
+ .menu{display:block;font-size:11px}
+ .logo{font-size:22px}
+ .actions{gap:10px;font-size:11px}
+ .hero{min-height:450px;background-position:center}
+ .hero-content{padding:30px 6%}
+ .hero h1{letter-spacing:-2px}
+ .section{padding:45px 4%}
+ .categories{gap:8px}
+ .category{height:210px}
+ .cat-text{left:10px;bottom:12px}
+ .cat-text h3{font-size:17px}
+ .cat-text span{font-size:8px}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 10px}
+ .banner{margin:0 4%;padding:35px 6%;align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+<div class="topbar">NEW SEASON. NEW ENERGY. &nbsp; • &nbsp; FREE SHIPPING ON SELECT ORDERS</div>
+
+<nav>
+  <a class="logo" href="index.html">BASIL<span>MART.</span></a>
+
+  <div class="links">
+    <a href="index.html">HOME</a>
+    <a href="products.html">SHOP ALL</a>
+    <a href="products.html">NEW ARRIVALS</a>
+  </div>
+
+  <div class="actions">
+    <a href="login.html">ACCOUNT</a>
+    <a href="cart.html">BAG (<span id="cartCount">0</span>)</a>
+  </div>
+  <a class="menu" href="products.html">SHOP →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">BASILMART ORIGINALS / 2026</div>
+    <h1>WEAR YOUR<br>IDENTITY.</h1>
+    <p>Everyday essentials. Bold fits. Your own style. Discover pieces made to stand out without trying too hard.</p>
+    <a class="btn" href="products.html">EXPLORE THE COLLECTION &nbsp; ↗</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="kicker">FIND YOUR FIT</div>
+      <h2>SHOP BY CATEGORY</h2>
+    </div>
+    <a class="viewall" href="products.html">VIEW ALL ↗</a>
+  </div>
+
+  <div class="categories">
+    <a class="category" href="products.html">
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80" alt="Streetwear fashion">
+      <div class="cat-text"><h3>NEW ARRIVALS</h3><span>DISCOVER MORE ↗</span></div>
+    </a>
+    <a class="category" href="products.html">
+      <img src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&w=700&q=80" alt="Casual menswear">
+      <div class="cat-text"><h3>EVERYDAY FITS</h3><span>SHOP THE LOOK ↗</span></div>
+    </a>
+    <a class="category" href="products.html">
+      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=700&q=80" alt="Modern fashion">
+      <div class="cat-text"><h3>STREET STYLE</h3><span>EXPLORE ↗</span></div>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="kicker">HANDPICKED FOR YOU</div>
+      <h2>THE LATEST DROPS</h2>
+    </div>
+    <a class="viewall" href="products.html">SHOP ALL PRODUCTS ↗</a>
+  </div>
+
+  <div class="products">
+    <a class="product" href="products.html">
+      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80" alt="Classic T-shirt">
+      <div class="product-info"><span class="tag">EVERYDAY ESSENTIAL</span><div class="product-name">CLASSIC COTTON TEE</div><div class="product-price">Explore price in shop ↗</div></div>
+    </a>
+    <a class="product" href="products.html">
+      <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80" alt="Denim jeans">
+      <div class="product-info"><span class="tag">STREET EDIT</span><div class="product-name">DENIM COLLECTION</div><div class="product-price">Explore price in shop ↗</div></div>
+    </a>
+    <a class="product" href="products.html">
+      <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=600&q=80" alt="Fashion clothing">
+      <div class="product-info"><span class="tag">NEW DROP</span><div class="product-name">DAILY ROTATION</div><div class="product-price">Explore price in shop ↗</div></div>
+    </a>
+    <a class="product" href="products.html">
+      <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=600&q=80" alt="Modern casual outfit">
+      <div class="product-info"><span class="tag">BASILMART EDIT</span><div class="product-name">THE STREET EDIT</div><div class="product-price">Explore price in shop ↗</div></div>
+    </a>
+  </div>
+</section>
+
+<section class="banner">
+  <div>
+    <div class="kicker">YOUR STYLE. YOUR RULES.</div>
+    <h2>Good fits. No limits. Just you.</h2>
+  </div>
+  <a class="darkbtn" href="products.html">FIND YOUR NEXT FIT ↗</a>
+</section>
+
+<footer>
+  <div class="footer-row">
+    <div>
+      <a class="logo" href="index.html">BASILMART.</a>
+      <p>Built for everyday. Styled by you.</p>
+    </div>
+    <div>
+      <a href="products.html">SHOP</a>
+      <a href="login.html">ACCOUNT</a>
+      <a href="cart.html">CART</a>
+      <p>© 2026 BASILMART. ALL RIGHTS RESERVED.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const cart = JSON.parse(localStorage.getItem("basilCart")) || [];
+document.getElementById("cartCount").textContent = cart.length;
+</script>
+
+</body>
+</html>

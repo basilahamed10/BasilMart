@@ -1,0 +1,343 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111;
+    background: #fff;
+}
+
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: 4px;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 35px;
+}
+
+.navbar nav a {
+    text-decoration: none;
+    color: #111;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+}
+
+.navbar nav a:hover {
+    text-decoration: underline;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 18px;
+}
+
+.nav-icons a {
+    text-decoration: none;
+    color: #111;
+    font-size: 20px;
+}
+
+
+/* ================= HERO ================= */
+
+.hero {
+    height: 680px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-image {
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.25),
+            rgba(0,0,0,0.25)
+        ),
+        url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1800&q=90");
+
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content {
+    position: absolute;
+    left: 8%;
+    bottom: 90px;
+    color: white;
+}
+
+.hero-content p:first-child {
+    font-size: 13px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.hero-content h1 {
+    font-size: 70px;
+    line-height: 0.95;
+    letter-spacing: -2px;
+    margin-bottom: 25px;
+}
+
+.hero-text {
+    font-size: 15px;
+    margin-bottom: 30px;
+}
+
+.shop-btn {
+    display: inline-block;
+    padding: 15px 35px;
+    background: white;
+    color: #111;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.shop-btn:hover {
+    background: #111;
+    color: white;
+}
+
+
+/* ================= CATEGORIES ================= */
+
+.categories {
+    padding: 100px 5%;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-title p {
+    font-size: 11px;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+}
+
+.section-title h2 {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.category-card {
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+}
+
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.category-card:hover img {
+    transform: scale(1.04);
+}
+
+.category-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        transparent 50%,
+        rgba(0,0,0,0.7)
+    );
+}
+
+.category-card div {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    z-index: 2;
+}
+
+.category-card h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.category-card span {
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+
+/* ================= PROMO ================= */
+
+.promo {
+    height: 500px;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.35),
+            rgba(0,0,0,0.35)
+        ),
+        url("https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1800&q=90");
+
+    background-size: cover;
+    background-position: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    color: white;
+}
+
+.promo p {
+    font-size: 11px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.promo h2 {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 30px;
+}
+
+.promo a {
+    color: white;
+    text-decoration: underline;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+
+/* ================= ABOUT ================= */
+
+.about {
+    padding: 110px 20%;
+    text-align: center;
+    background: #f5f3ef;
+}
+
+.about > p:first-child {
+    font-size: 11px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.about h2 {
+    font-size: 45px;
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.about-text {
+    max-width: 550px;
+    margin: auto;
+    line-height: 1.7;
+    color: #555;
+}
+
+
+/* ================= FOOTER ================= */
+
+footer {
+    background: #111;
+    color: white;
+    padding: 60px 5%;
+    text-align: center;
+}
+
+.footer-logo {
+    font-size: 25px;
+    letter-spacing: 5px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 12px;
+}
+
+footer p {
+    margin-top: 35px;
+    color: #999;
+    font-size: 11px;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+
+    .navbar nav {
+        display: none;
+    }
+
+    .hero {
+        height: 600px;
+    }
+
+    .hero-content {
+        left: 7%;
+        bottom: 60px;
+    }
+
+    .hero-content h1 {
+        font-size: 48px;
+    }
+
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-card {
+        height: 450px;
+    }
+
+    .promo h2 {
+        font-size: 35px;
+    }
+
+    .about {
+        padding: 80px 10%;
+    }
+
+    .about h2 {
+        font-size: 32px;
+    }
+}

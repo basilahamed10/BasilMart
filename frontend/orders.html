@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>BasilMart - My Orders</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8f7f4;
+            color: #111;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #111;
+            font-size: 13px;
+        }
+
+        .nav-links a:hover {
+            color: #555;
+        }
+
+        /* HEADER */
+
+        .orders-header {
+            text-align: center;
+            padding: 55px 20px;
+            background: #eeeae3;
+        }
+
+        .orders-header p {
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: #666;
+            margin: 0;
+        }
+
+        .orders-header h1 {
+            font-size: 40px;
+            margin: 10px 0;
+        }
+
+        /* CONTAINER */
+
+        .orders-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto 80px;
+        }
+
+        /* ORDER CARD */
+
+        .order-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            margin-bottom: 25px;
+            padding: 25px;
+        }
+
+        .order-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 18px;
+            margin-bottom: 18px;
+        }
+
+        .order-id {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .order-date {
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 20px;
+        }
+
+        /* PRODUCT */
+
+        .product-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-name {
+            font-size: 14px;
+        }
+
+        .product-price {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* DETAILS */
+
+        .details {
+            margin-top: 20px;
+            background: #f8f8f8;
+            padding: 18px;
+        }
+
+        .details p {
+            margin: 7px 0;
+            font-size: 13px;
+        }
+
+        .details strong {
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        /* TOTAL */
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 2px solid #111;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* EMPTY */
+
+        .empty-orders {
+            background: white;
+            text-align: center;
+            padding: 70px 20px;
+            border: 1px solid #eee;
+        }
+
+        .empty-orders h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty-orders p {
+            color: #666;
+        }
+
+        .shop-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 13px 30px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .shop-btn:hover {
+            background: #333;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        footer h3 {
+            margin: 0 0 15px;
+        }
+
+        footer p {
+            margin: 7px 0;
+        }
+
+        /* MOBILE */
+
+        @media(max-width: 600px) {
+
+            nav {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+                letter-spacing: 3px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 11px;
+            }
+
+            .orders-header {
+                padding: 40px 15px;
+            }
+
+            .orders-header h1 {
+                font-size: 32px;
+            }
+
+            .order-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .product-row {
+                gap: 15px;
+            }
+
+            .details strong {
+                min-width: 100px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav>
+
+        <div class="logo">
+            BASILMART
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                HOME
+            </a>
+
+            <a href="products.html">
+                SHOP
+            </a>
+
+            <a href="cart.html">
+                CART
+            </a>
+
+            <a href="orders.html">
+                ORDERS
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- HEADER -->
+
+    <section class="orders-header">
+
+        <p>BASILMART</p>
+
+        <h1>MY ORDERS</h1>
+
+    </section>
+
+
+    <!-- ORDERS -->
+
+    <div class="orders-container">
+
+        <div id="ordersContainer"></div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h3>
+            BASILMART
+        </h3>
+
+        <p>
+            Modern products. Simple shopping.
+        </p>
+
+        <p>
+            © 2026 BasilMart
+        </p>
+
+    </footer>
+
+
+    <script>
+
+        /* =========================
+           GET ORDERS
+        ========================= */
+
+        const orders =
+            JSON.parse(
+                localStorage.getItem(
+                    "basilOrders"
+                )
+            ) || [];
+
+
+        const container =
+            document.getElementById(
+                "ordersContainer"
+            );
+
+
+        /* =========================
+           EMPTY ORDERS
+        ========================= */
+
+        if (orders.length === 0) {
+
+            container.innerHTML = `
+
+                <div class="empty-orders">
+
+                    <h2>
+                        No orders yet
+                    </h2>
+
+                    <p>
+                        You haven't placed
+                        any orders yet.
+                    </p>
+
+                    <a
+                        href="products.html"
+                        class="shop-btn"
+                    >
+                        START SHOPPING
+                    </a>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =========================
+           DISPLAY ORDERS
+        ========================= */
+
+        else {
+
+            /* NEWEST ORDER FIRST */
+
+            const reversedOrders =
+                [...orders].reverse();
+
+
+            reversedOrders.forEach(
+                function(order) {
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "order-card";
+
+
+                    /* PRODUCTS */
+
+                    let productsHTML =
+                        "";
+
+
+                    order.items.forEach(
+                        function(item) {
+
+                            const price =
+                                Number(
+                                    item.price
+                                ) || 0;
+
+
+                            const quantity =
+                                Number(
+                                    item.quantity
+                                ) || 1;
+
+
+                            const itemTotal =
+                                price * quantity;
+
+
+                            productsHTML += `
+
+                                <div class="product-row">
+
+                                    <span class="product-name">
+
+                                        ${item.name}
+                                        × ${quantity}
+
+                                    </span>
+
+                                    <span class="product-price">
+
+                                        ₹${itemTotal.toLocaleString("en-IN")}
+
+                                    </span>
+
+                                </div>
+
+                            `;
+
+                        }
+                    );
+
+
+                    /* ORDER CARD */
+
+                    card.innerHTML = `
+
+                        <div class="order-top">
+
+                            <div>
+
+                                <div class="order-id">
+
+                                    Order ID:
+                                    ${order.orderId}
+
+                                </div>
+
+                                <div class="order-date">
+
+                                    ${order.date}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="status">
+
+                                ${order.status}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            ${productsHTML}
+
+                        </div>
+
+
+                        <div class="details">
+
+                            <p>
+
+                                <strong>
+                                    Customer:
+                                </strong>
+
+                                ${order.customerName}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Phone:
+                                </strong>
+
+                                ${order.phone}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Address:
+                                </strong>
+
+                                ${order.address}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Payment:
+                                </strong>
+
+                                ${order.paymentMethod}
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="order-total">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <span>
+                                ₹${Number(order.total).toLocaleString("en-IN")}
+                            </span>
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

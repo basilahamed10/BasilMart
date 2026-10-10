@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | BASILMART</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f2ed;color:#171717;min-height:100vh}
+.topbar{background:#171717;color:white;text-align:center;padding:11px;font-size:10px;letter-spacing:2px}
+nav{height:75px;display:flex;align-items:center;justify-content:space-between;padding:0 7%;border-bottom:1px solid #ddd}
+.logo{font-size:25px;font-weight:900;letter-spacing:-1.5px;color:#171717;text-decoration:none}
+.navlinks{display:flex;gap:25px}
+.navlinks a{color:#171717;text-decoration:none;font-size:11px;font-weight:bold;letter-spacing:1px}
+main{min-height:calc(100vh - 130px);display:grid;grid-template-columns:1fr 1fr}
+.visual{background:linear-gradient(#0002,#0005),url('https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=85') center/cover;display:flex;align-items:flex-end;padding:50px;color:white}
+.visual h1{font-size:clamp(42px,6vw,78px);line-height:.92;letter-spacing:-4px;font-weight:900}
+.visual p{font-size:11px;letter-spacing:2px;margin-bottom:18px}
+.panel{display:flex;justify-content:center;align-items:center;padding:45px 8%}
+.formbox{width:100%;max-width:410px}
+.eyebrow{font-size:10px;letter-spacing:3px;font-weight:bold;color:#777;margin-bottom:15px}
+h2{font-size:42px;letter-spacing:-2px;margin-bottom:12px}
+.subtitle{font-size:13px;color:#777;margin-bottom:35px;line-height:1.6}
+label{display:block;font-size:10px;letter-spacing:1.5px;font-weight:bold;margin:20px 0 9px}
+input{width:100%;padding:15px;border:1px solid #d3d0ca;background:transparent;font-size:14px;outline:none}
+input:focus{border-color:#171717}
+button{margin-top:25px;width:100%;padding:17px;background:#171717;color:white;border:0;font-size:11px;font-weight:bold;letter-spacing:2px;cursor:pointer}
+button:hover{background:#444}
+button:disabled{opacity:.6}
+#message{font-size:13px;margin-top:17px;line-height:1.5}
+.bottom{font-size:12px;color:#777;margin-top:25px;text-align:center}
+.bottom a{color:#171717;font-weight:bold}
+@media(max-width:700px){nav{padding:0 5%;height:65px}.navlinks{gap:12px}.navlinks a{font-size:9px}main{grid-template-columns:1fr}.visual{min-height:260px;padding:28px}.visual h1{font-size:52px}.panel{padding:45px 7%}}
+</style>
+</head>
+<body>
+<div class="topbar">NEW SEASON. NEW ENERGY. | BASILMART STREETWEAR</div>
+<nav>
+<a class="logo" href="index.html">BASILMART®</a>
+<div class="navlinks">
+<a href="index.html">HOME</a>
+<a href="products.html">SHOP</a>
+<a href="cart.html">BAG</a>
+</div>
+</nav>
+<main>
+<section class="visual">
+<div>
+<p>BUILT FOR YOUR EVERYDAY</p>
+<h1>YOUR<br>STYLE.<br>YOUR RULES.</h1>
+</div>
+</section>
+<section class="panel">
+<div class="formbox">
+<div class="eyebrow">WELCOME BACK</div>
+<h2>Sign in.</h2>
+<p class="subtitle">Good to have you back. Login to continue your BASILMART experience.</p>
+<form id="loginForm">
+<label for="email">EMAIL ADDRESS</label>
+<input id="email" type="email" placeholder="you@example.com" required>
+<label for="password">PASSWORD</label>
+<input id="password" type="password" placeholder="Enter your password" required>
+<button id="loginButton" type="submit">SIGN IN →</button>
+</form>
+<p id="message" role="status"></p>
+<div class="bottom">New here? <a href="register.html">Create an account</a></div>
+</div>
+</section>
+</main>
+<script src="config.js"></script>
+<script>
+const API_URL = (typeof window !== "undefined" && window.API_URL) ? window.API_URL : "http://localhost:8080";
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
+const button = document.getElementById("loginButton");
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    button.disabled = true;
+    message.style.color = "#555";
+    message.textContent = "Signing in...";
+
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: new URLSearchParams({email, password})
+        });
+
+        const text = await response.text();
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch {
+            throw new Error("Server response is not JSON. Check that BasilMart backend is running the latest build.");
+        }
+
+        if (!response.ok || data.success === false) {
+            throw new Error(data.message || "Login failed. Check your email and password.");
+        }
+
+        localStorage.setItem("basilUser", JSON.stringify(data.user || data));
+        message.style.color = "green";
+        message.textContent = "Login successful! Opening shop...";
+
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 800);
+
+    } catch (error) {
+        message.style.color = "#c62828";
+        message.textContent = error.message === "Failed to fetch"
+            ? "Cannot connect to backend. Check whether BasilMart server is running."
+            : error.message;
+    } finally {
+        button.disabled = false;
+    }
+});
+</script>
+</body>
+</html>

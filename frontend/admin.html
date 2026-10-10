@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasilMart - Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f5f5;
+            color: #171717;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .admin-section {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .admin-section h1 {
+            margin-bottom: 10px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin: 25px 0;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #00000012;
+        }
+
+        .dashboard-card h2 {
+            font-size: 28px;
+            margin: 0 0 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .dashboard-card p {
+            margin: 0;
+            color: #666;
+        }
+
+        .admin-panel {
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .product-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .product-form input,
+        .product-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .product-form textarea {
+            grid-column: 1 / -1;
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .product-form button,
+        .refresh-button,
+        .update-button {
+            padding: 11px 14px;
+            border: 1px solid #111;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .product-form button,
+        .update-button {
+            background: #111;
+            color: white;
+        }
+
+        .product-form button:hover,
+        .update-button:hover {
+            background: #333;
+        }
+
+        .product-form button:disabled,
+        .update-button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .refresh-button {
+            background: white;
+            color: #111;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 13px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #111;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .dashboard-message {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .order-status {
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-width: 125px;
+            background: white;
+        }
+
+        .order-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .small-message {
+            font-size: 12px;
+            max-width: 160px;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 600px) {
+            .product-form {
+                grid-template-columns: 1fr;
+            }
+
+            .product-form textarea {
+                grid-column: auto;
+            }
+
+            .admin-section {
+                margin: 20px auto;
+                padding: 12px;
+            }
+
+            .admin-panel {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">BasilMart Admin</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+        </div>
+    </nav>
+
+    <section class="admin-section">
+
+        <h1>Admin Dashboard</h1>
+        <p>Manage BasilMart products, orders and store statistics.</p>
+
+        <!-- DASHBOARD STATISTICS -->
+        <div class="dashboard">
+            <div class="dashboard-card">
+                <h2 id="totalProducts">—</h2>
+                <p>Total Products</p>
+            </div>
+
+            <div class="dashboard-card">
+                <h2 id="totalUsers">—</h2>
+                <p>Total Users</p>
+            </div>
+
+            <div class="dashboard-card">
+                <h2 id="totalOrders">—</h2>
+                <p>Total Orders</p>
+            </div>
+
+            <div class="dashboard-card">
+                <h2 id="totalSales">—</h2>
+                <p>Total Sales</p>
+            </div>
+        </div>
+
+        <p id="statsMessage" class="dashboard-message"></p>
+
+        <!-- ADD PRODUCT -->
+        <div class="admin-panel">
+            <h2>Add New Product</h2>
+
+            <form id="productForm" class="product-form">
+                <input type="text" id="productName"
+                    placeholder="Product name" required>
+
+                <input type="number" id="productPrice"
+                    placeholder="Price (₹)" min="0.01"
+                    step="0.01" required>
+
+                <input type="number" id="productStock"
+                    placeholder="Stock quantity" min="0"
+                    step="1" required>
+
+                <textarea id="productDescription"
+                    placeholder="Product description" required></textarea>
+
+                <button type="submit" id="addProductButton">
+                    Add Product
+                </button>
+            </form>
+
+            <p id="statusMessage" class="status-message"></p>
+        </div>
+
+        <!-- PRODUCTS TABLE -->
+        <div class="admin-panel">
+            <h2>Products List</h2>
+
+            <button type="button" class="refresh-button"
+                id="refreshButton">
+                Refresh Products
+            </button>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTable">
+                        <tr><td colspan="5">Loading products...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ORDERS MANAGEMENT -->
+        <div class="admin-panel">
+            <h2>Orders Management</h2>
+            <p>View customer orders and update their status.</p>
+
+            <button type="button" class="refresh-button"
+                id="refreshOrdersButton">
+                Refresh Orders
+            </button>
+
+            <p id="ordersMessage" class="dashboard-message"
+                aria-live="polite"></p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Email</th>
+                            <th>Total</th>
+                            <th>Current Status</th>
+                            <th>Order Date</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="ordersTable">
+                        <tr>
+                            <td colspan="7">Loading orders...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+    <script src="config.js"></script>
+    <script>
+        const API_URL = (typeof window !== "undefined" && window.API_URL) ? window.API_URL : "http://localhost:8080";
+
+        const productForm = document.getElementById("productForm");
+        const productsTable = document.getElementById("productsTable");
+        const ordersTable = document.getElementById("ordersTable");
+
+        const totalProducts = document.getElementById("totalProducts");
+        const totalUsers = document.getElementById("totalUsers");
+        const totalOrders = document.getElementById("totalOrders");
+        const totalSales = document.getElementById("totalSales");
+
+        const statusMessage = document.getElementById("statusMessage");
+        const statsMessage = document.getElementById("statsMessage");
+        const ordersMessage = document.getElementById("ordersMessage");
+        const addProductButton = document.getElementById("addProductButton");
+
+        const allowedStatuses = [
+            "Pending",
+            "Placed",
+            "Processing",
+            "Shipped",
+            "Delivered",
+            "Cancelled"
+        ];
+
+        // DASHBOARD STATISTICS
+        async function loadAdminStats() {
+            statsMessage.textContent = "Loading dashboard statistics...";
+
+            try {
+                const response = await fetch(`${API_URL}/admin/stats`);
+                const data = await response.json();
+
+                if (!response.ok || data.success !== true) {
+                    throw new Error(
+                        data.message || "Unable to load statistics."
+                    );
+                }
+
+                totalProducts.textContent = data.totalProducts;
+                totalUsers.textContent = data.totalUsers;
+                totalOrders.textContent = data.totalOrders;
+
+                const sales = Number(data.totalSales);
+
+                totalSales.textContent = Number.isFinite(sales)
+                    ? "₹" + sales.toLocaleString("en-IN", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })
+                    : "₹0.00";
+
+                statsMessage.textContent =
+                    "Dashboard statistics updated.";
+
+            } catch (error) {
+                statsMessage.textContent =
+                    "Could not load statistics. Check the backend.";
+                console.error("Admin stats error:", error);
+            }
+        }
+
+        // LOAD PRODUCTS
+        async function loadProducts() {
+            productsTable.innerHTML =
+                '<tr><td colspan="5">Loading products...</td></tr>';
+
+            try {
+                const response = await fetch(`${API_URL}/products`);
+                const data = await response.json();
+
+                if (!response.ok || data.success === false) {
+                    throw new Error(
+                        data.message || "Unable to load products."
+                    );
+                }
+
+                const products = Array.isArray(data)
+                    ? data
+                    : (data.products || []);
+
+                totalProducts.textContent = products.length;
+
+                if (products.length === 0) {
+                    productsTable.innerHTML =
+                        '<tr><td colspan="5">No products found.</td></tr>';
+                    return;
+                }
+
+                productsTable.innerHTML = "";
+
+                products.forEach(product => {
+                    const row = document.createElement("tr");
+
+                    const values = [
+                        product.id,
+                        product.name,
+                        "₹" + Number(product.price).toFixed(2),
+                        product.stock,
+                        product.description || ""
+                    ];
+
+                    values.forEach(value => {
+                        const cell = document.createElement("td");
+                        cell.textContent = value ?? "";
+                        row.appendChild(cell);
+                    });
+
+                    productsTable.appendChild(row);
+                });
+
+            } catch (error) {
+                productsTable.innerHTML =
+                    '<tr><td colspan="5">Could not load products. Check the backend.</td></tr>';
+
+                console.error("Load products error:", error);
+            }
+        }
+
+        // ADD PRODUCT
+        productForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            statusMessage.textContent = "Adding product...";
+            statusMessage.style.color = "#333";
+            addProductButton.disabled = true;
+
+            const product = {
+                name: document.getElementById("productName").value.trim(),
+                price: Number(document.getElementById("productPrice").value),
+                stock: Number(document.getElementById("productStock").value),
+                description: document.getElementById("productDescription").value.trim()
+            };
+
+            if (
+                !product.name ||
+                !product.description ||
+                !Number.isFinite(product.price) ||
+                product.price <= 0 ||
+                !Number.isInteger(product.stock) ||
+                product.stock < 0
+            ) {
+                statusMessage.textContent =
+                    "Please enter valid product details.";
+                statusMessage.style.color = "red";
+                addProductButton.disabled = false;
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/admin/products`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(product)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.success !== true) {
+                    throw new Error(
+                        data.message || "Product could not be added."
+                    );
+                }
+
+                statusMessage.textContent =
+                    data.message || "Product added successfully!";
+                statusMessage.style.color = "green";
+
+                productForm.reset();
+
+                await loadProducts();
+                await loadAdminStats();
+
+            } catch (error) {
+                statusMessage.textContent = "Error: " + error.message;
+                statusMessage.style.color = "red";
+                console.error("Add product error:", error);
+            } finally {
+                addProductButton.disabled = false;
+            }
+        });
+
+        // LOAD ORDERS
+        async function loadOrders() {
+            ordersTable.innerHTML =
+                '<tr><td colspan="7">Loading orders...</td></tr>';
+
+            ordersMessage.textContent = "Loading orders...";
+
+            try {
+                const response = await fetch(`${API_URL}/admin/orders`);
+                const data = await response.json();
+
+                if (!response.ok || data.success !== true) {
+                    throw new Error(
+                        data.message || "Unable to load orders."
+                    );
+                }
+
+                const orders = Array.isArray(data.orders)
+                    ? data.orders
+                    : [];
+
+                if (orders.length === 0) {
+                    ordersTable.innerHTML =
+                        '<tr><td colspan="7">No orders found.</td></tr>';
+                    ordersMessage.textContent = "No orders available.";
+                    return;
+                }
+
+                ordersTable.innerHTML = "";
+
+                orders.forEach(order => {
+                    const row = document.createElement("tr");
+
+                    function addCell(value) {
+                        const cell = document.createElement("td");
+                        cell.textContent = value ?? "";
+                        row.appendChild(cell);
+                        return cell;
+                    }
+
+                    addCell("#" + order.id);
+                    addCell(order.customer_name || "Guest");
+                    addCell(order.customer_email || "—");
+
+                    const amount = Number(order.total);
+                    addCell(Number.isFinite(amount)
+                        ? "₹" + amount.toFixed(2)
+                        : "₹0.00");
+
+                    addCell(order.status || "Pending");
+
+                    let formattedDate = order.created_at || "—";
+
+                    if (order.created_at) {
+                        const date = new Date(
+                            order.created_at.replace(" ", "T")
+                        );
+
+                        if (!Number.isNaN(date.getTime())) {
+                            formattedDate = date.toLocaleString("en-IN");
+                        }
+                    }
+
+                    addCell(formattedDate);
+
+                    const actionCell = addCell("");
+                    const actions = document.createElement("div");
+                    actions.className = "order-actions";
+
+                    const select = document.createElement("select");
+                    select.className = "order-status";
+                    select.setAttribute(
+                        "aria-label",
+                        "Status for order " + order.id
+                    );
+
+                    allowedStatuses.forEach(status => {
+                        const option = document.createElement("option");
+                        option.value = status;
+                        option.textContent = status;
+                        select.appendChild(option);
+                    });
+
+                    const currentStatus = allowedStatuses.includes(order.status)
+                        ? order.status
+                        : "Pending";
+
+                    select.value = currentStatus;
+
+                    const updateButton = document.createElement("button");
+                    updateButton.type = "button";
+                    updateButton.className = "update-button";
+                    updateButton.textContent = "Update Status";
+
+                    const message = document.createElement("span");
+                    message.className = "small-message";
+                    message.setAttribute("aria-live", "polite");
+
+                    updateButton.addEventListener("click", async function() {
+                        const newStatus = select.value;
+
+                        updateButton.disabled = true;
+                        message.style.color = "#555";
+                        message.textContent = "Updating...";
+
+                        try {
+                            const updateResponse = await fetch(
+                                `${API_URL}/admin/orders/status`,
+                                {
+                                    method: "PUT",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        id: Number(order.id),
+                                        status: newStatus
+                                    })
+                                }
+                            );
+
+                            const updateData = await updateResponse.json();
+
+                            if (
+                                !updateResponse.ok ||
+                                updateData.success !== true
+                            ) {
+                                throw new Error(
+                                    updateData.message ||
+                                    "Status update failed."
+                                );
+                            }
+
+                            message.style.color = "green";
+                            message.textContent = "Updated!";
+                            ordersMessage.textContent =
+                                "Order #" + order.id + " status updated.";
+
+                            // Reload from database to show saved status.
+                            await loadOrders();
+                            await loadAdminStats();
+
+                        } catch (error) {
+                            message.style.color = "red";
+                            message.textContent = error.message;
+                            ordersMessage.textContent =
+                                "Could not update order status.";
+                            console.error("Order status error:", error);
+                            updateButton.disabled = false;
+                        }
+                    });
+
+                    actions.appendChild(select);
+                    actions.appendChild(updateButton);
+                    actions.appendChild(message);
+                    actionCell.appendChild(actions);
+
+                    ordersTable.appendChild(row);
+                });
+
+                ordersMessage.textContent =
+                    "Loaded " + orders.length + " order(s).";
+
+            } catch (error) {
+                ordersTable.innerHTML =
+                    '<tr><td colspan="7">Could not load orders. Check the backend and API route.</td></tr>';
+
+                ordersMessage.textContent = error.message;
+                console.error("Load orders error:", error);
+            }
+        }
+
+        // REFRESH PRODUCTS AND STATISTICS
+        document.getElementById("refreshButton").addEventListener(
+            "click",
+            async function() {
+                await loadProducts();
+                await loadAdminStats();
+            }
+        );
+
+        // REFRESH ORDERS
+        document.getElementById("refreshOrdersButton").addEventListener(
+            "click",
+            async function() {
+                await loadOrders();
+                await loadAdminStats();
+            }
+        );
+
+        // INITIAL LOAD
+        loadProducts();
+        loadAdminStats();
+        loadOrders();
+    </script>
+
+</body>
+</html>

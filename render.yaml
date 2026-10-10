@@ -1,0 +1,33 @@
+# Render Blueprint for BasilMart Infrastructure
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # C++ Drogon Backend Web Service (Docker)
+  - type: web
+    name: basilmart-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: basilmart-db
+          property: connectionString
+
+  # Frontend Static Site
+  - type: static
+    name: basilmart-frontend
+    plan: free
+    publishPath: ./frontend
+    pullRequestPreviewsEnabled: false
+
+databases:
+  # PostgreSQL Database
+  - name: basilmart-db
+    plan: free
+    databaseName: basilmart
+    user: basilmart

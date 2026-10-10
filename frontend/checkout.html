@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — BasilMart</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:#111;background:#fff}
+a{color:inherit;text-decoration:none}
+.top{background:#171717;color:white;text-align:center;padding:10px;font-size:10px;letter-spacing:2px}
+nav{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #eee;gap:15px}
+.logo{font-size:24px;font-weight:900;letter-spacing:-1px}
+.logo span{color:#777}
+.links,.actions{display:flex;gap:22px;font-size:11px;font-weight:bold;letter-spacing:1px}
+main{max-width:1150px;margin:auto;padding:50px 6% 80px}
+.kicker{font-size:10px;letter-spacing:2px;color:#777;margin-bottom:12px}
+h1{font-size:clamp(38px,6vw,60px);letter-spacing:-3px}
+.intro{color:#777;font-size:13px;margin-top:12px;line-height:1.7}
+.layout{display:grid;grid-template-columns:1.3fr 1fr;gap:45px;margin-top:40px}
+.panel{border:1px solid #e5e5e5;padding:28px}
+h2{font-size:18px;margin-bottom:24px}
+label{display:block;font-size:11px;font-weight:bold;letter-spacing:.5px;margin:19px 0 8px}
+input,textarea,select{width:100%;padding:14px;border:1px solid #d7d7d7;background:#fff;font:13px Arial;color:#111}
+textarea{height:95px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:1px solid #111}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.summary{background:#f5f5f3;border:0;height:max-content}
+.item{display:flex;justify-content:space-between;gap:15px;font-size:12px;padding:15px 0;border-top:1px solid #ddd}
+.line{display:flex;justify-content:space-between;gap:12px;font-size:12px;margin:18px 0}
+.total{display:flex;justify-content:space-between;border-top:1px solid #ccc;padding-top:22px;margin-top:24px;font-size:19px;font-weight:bold}
+.hint{font-size:11px;color:#666;line-height:1.7;margin-top:18px}
+.btn{width:100%;margin-top:27px;padding:16px;background:#111;color:#fff;border:1px solid #111;font-size:11px;font-weight:bold;letter-spacing:1px;cursor:pointer}
+.btn:hover{background:white;color:#111}
+.back{display:inline-block;margin-top:25px;font-size:11px;font-weight:bold;border-bottom:1px solid;padding-bottom:5px}
+footer{background:#151515;color:white;padding:35px 6%;font-size:11px;line-height:2}
+@media(max-width:750px){nav{height:65px;padding:0 4%}.logo{font-size:20px}.links{display:none}.actions{gap:12px}main{padding:35px 4% 60px}.layout{grid-template-columns:1fr;gap:25px}.panel{padding:20px}h1{letter-spacing:-2px}}
+@media(max-width:380px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">BASILMART ORIGINALS · ALMOST YOURS</div>
+
+<nav>
+  <a class="logo" href="index.html">BASIL<span>MART.</span></a>
+  <div class="links">
+    <a href="index.html">HOME</a>
+    <a href="products.html">SHOP ALL</a>
+  </div>
+  <div class="actions">
+    <a href="login.html">ACCOUNT</a>
+    <a href="cart.html">BAG (<span id="cartCount">0</span>)</a>
+  </div>
+</nav>
+
+<main>
+  <div class="kicker">BASILMART / SECURE CHECKOUT</div>
+  <h1>CHECKOUT.</h1>
+  <p class="intro">Just a few details and your next favourite fit is on its way.</p>
+
+  <form id="checkoutForm">
+    <div class="layout">
+      <section class="panel">
+        <h2>01 / DELIVERY DETAILS</h2>
+
+        <label for="name">FULL NAME *</label>
+        <input id="name" type="text" autocomplete="name" placeholder="Your full name" required>
+
+        <div class="row">
+          <div>
+            <label for="phone">PHONE NUMBER *</label>
+            <input id="phone" type="tel" autocomplete="tel" placeholder="Phone number" required>
+          </div>
+          <div>
+            <label for="city">CITY *</label>
+            <input id="city" type="text" autocomplete="address-level2" placeholder="Your city" required>
+          </div>
+        </div>
+
+        <label for="address">DELIVERY ADDRESS *</label>
+        <textarea id="address" autocomplete="street-address" placeholder="House no., street, area, pincode" required></textarea>
+
+        <label for="payment">PAYMENT METHOD *</label>
+        <select id="payment" required>
+          <option value="Cash on Delivery">Cash on Delivery</option>
+          <option value="UPI">UPI (demo selection)</option>
+          <option value="Card">Credit / Debit Card (demo selection)</option>
+        </select>
+
+        <p class="hint">UPI and Card are only selections in this demo. Online payment is not processed by this page.</p>
+      </section>
+
+      <aside class="panel summary">
+        <h2>02 / YOUR ORDER</h2>
+        <div id="orderItems"></div>
+        <div class="line"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+        <div class="line"><span>Shipping</span><span>To be confirmed</span></div>
+        <div class="total"><span>ORDER TOTAL</span><span id="total">₹0</span></div>
+        <p class="hint">Please check your delivery details before placing your order.</p>
+        <button class="btn" type="submit">PLACE YOUR ORDER →</button>
+        <a class="back" href="cart.html">← BACK TO YOUR BAG</a>
+      </aside>
+    </div>
+  </form>
+</main>
+
+<footer>
+  <div class="logo">BASILMART.</div>
+  <p>Built for everyday. Styled by you.</p>
+  <p>© 2026 BASILMART. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script>
+const cart = JSON.parse(localStorage.getItem("basilCart") || "[]");
+const money = value => "₹" + Number(value).toLocaleString("en-IN");
+const total = cart.reduce((sum,item) => sum + Number(item.price || 0), 0);
+
+document.getElementById("cartCount").textContent = cart.length;
+document.getElementById("subtotal").textContent = money(total);
+document.getElementById("total").textContent = money(total);
+
+document.getElementById("orderItems").innerHTML = cart.length
+  ? cart.map(item => `
+      <div class="item">
+        <span>${escapeHtml(item.name)}</span>
+        <strong>${money(item.price)}</strong>
+      </div>`).join("")
+  : '<p class="hint">Your bag is empty. Please add a product before checkout.</p>';
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+
+document.getElementById("checkoutForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  if (cart.length === 0) {
+    alert("Your bag is empty! Please shop first.");
+    window.location.href = "products.html";
+    return;
+  }
+
+  const orders = JSON.parse(localStorage.getItem("basilOrders") || "[]");
+
+  const order = {
+    id: Date.now(),
+    items: cart,
+    total: total,
+    name: document.getElementById("name").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    city: document.getElementById("city").value.trim(),
+    address: document.getElementById("address").value.trim(),
+    payment: document.getElementById("payment").value,
+    status: "Order Placed",
+    date: new Date().toLocaleString()
+  };
+
+  orders.push(order);
+  localStorage.setItem("basilOrders", JSON.stringify(orders));
+  localStorage.removeItem("basilCart");
+
+  alert("Order placed successfully!");
+  window.location.href = "orders.html";
+});
+</script>
+</body>
+</html>

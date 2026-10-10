@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasilMart - Seller</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">BasilMart Seller</div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+    </div>
+</nav>
+
+<section class="seller-section">
+
+    <h1>Seller Dashboard</h1>
+
+    <div class="form-container">
+
+        <h2>Add Product</h2>
+
+        <form onsubmit="addProduct(event)">
+
+            <input type="text"
+                   id="productName"
+                   placeholder="Product Name"
+                   required>
+
+            <input type="number"
+                   id="productPrice"
+                   placeholder="Price"
+                   required>
+
+            <button class="btn" type="submit">
+                Add Product
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
